@@ -1,257 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AltLoc AI SoundLab</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<title>AltLoc AI SoundLab</title>
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #090909;
-      color: white;
-      text-align: center;
-    }
+<style>
 
-    header {
-      padding: 45px 20px 55px;
-      background: linear-gradient(135deg, #111, #222);
-    }
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#090909;
+    color:white;
+    text-align:center;
+}
 
-    h1 {
-      font-size: 40px;
-      margin: 0;
-      color: #00ffcc;
-      letter-spacing: 1px;
-    }
+header{
+    padding:30px 20px;
+    background:linear-gradient(135deg,#111,#222);
+}
 
-    header p {
-      color: #ccc;
-      font-size: 20px;
-      margin-top: 18px;
-    }
+h1{
+    font-size:34px;
+    margin:0;
+    color:#00ffcc;
+}
 
-    .box {
-      margin: 45px auto;
-      padding: 28px 24px;
-      width: 88%;
-      max-width: 460px;
-      background: #161616;
-      border-radius: 24px;
-      box-shadow: 0 0 35px rgba(0, 255, 204, 0.22);
-    }
+p{
+    color:#ccc;
+}
 
-    h2 {
-      font-size: 30px;
-      margin-bottom: 28px;
-    }
+.box{
+    margin:25px auto;
+    padding:20px;
+    width:85%;
+    max-width:420px;
+    background:#161616;
+    border-radius:18px;
+    box-shadow:0 0 20px rgba(0,255,204,0.15);
+}
 
-    select {
-      width: 100%;
-      padding: 18px;
-      margin: 9px 0;
-      border: none;
-      border-radius: 15px;
-      font-size: 18px;
-      font-weight: bold;
-      background: #eeeeee;
-      color: #000;
-    }
+select{
+    width:100%;
+    padding:18px;
+    margin-top:18px;
+    border:none;
+    border-radius:16px;
+    font-size:18px;
+}
 
-    button {
-      width: 100%;
-      margin-top: 18px;
-      padding: 19px;
-      border: none;
-      border-radius: 15px;
-      background: #00ddbb;
-      color: #000;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+button{
+    margin-top:22px;
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:18px;
+    background:#11f0c8;
+    color:black;
+    font-size:20px;
+    font-weight:bold;
+    cursor:pointer;
+}
 
-    button:active {
-      transform: scale(0.98);
-    }
+button:hover{
+    opacity:0.9;
+}
 
-    #progressContainer {
-      width: 100%;
-      height: 16px;
-      background: #222;
-      border-radius: 30px;
-      overflow: hidden;
-      margin-top: 24px;
-      display: none;
-    }
+#loadingContainer{
+    position:relative;
+    margin-top:20px;
+}
 
-    #progressBar {
-      width: 0%;
-      height: 100%;
-      background: #00ffcc;
-      transition: width 0.2s;
-    }
+#loadingBar{
+    width:100%;
+    height:18px;
+    background:#11f0c8;
+    border-radius:20px;
+    animation:loading 2s linear infinite;
+}
 
-    #status {
-      margin-top: 18px;
-      color: #bbb;
-      font-size: 18px;
-      min-height: 25px;
-    }
+#closeBanner{
+    position:absolute;
+    top:-12px;
+    right:0;
+    background:transparent;
+    border:none;
+    color:white;
+    font-size:22px;
+    cursor:pointer;
+    width:auto;
+    padding:0;
+}
 
-    .result-box {
-      background: #000;
-      padding: 28px 18px;
-      border-radius: 18px;
-      margin-top: 22px;
-      font-size: 20px;
-      line-height: 1.45;
-    }
+#statusText{
+    margin-top:12px;
+    color:#aaa;
+}
 
-    .result-title {
-      color: #00ffcc;
-      font-size: 26px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
+@keyframes loading{
+    0%{opacity:0.4;}
+    50%{opacity:1;}
+    100%{opacity:0.4;}
+}
 
-    .small-btn {
-      margin-top: 18px;
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 12px;
-    }
+#result{
+    margin-top:28px;
+    padding:25px;
+    border-radius:18px;
+    background:black;
+}
 
-    footer {
-      color: #666;
-      padding: 25px;
-      font-size: 14px;
-    }
-  </style>
+#result h2{
+    color:#00ffcc;
+    font-size:28px;
+}
+
+#result p{
+    font-size:20px;
+    color:#ddd;
+}
+
+</style>
 </head>
 
 <body>
 
-  <header>
+<header>
     <h1>AltLoc AI SoundLab</h1>
     <p>AI Sound Pack Generator</p>
-  </header>
+</header>
 
-  <main>
-    <section class="box">
-      <h2>Create Sound Pack</h2>
+<div class="box">
 
-      <select id="genre">
-        <option>Psytrance</option>
-        <option>Progressive Psytrance</option>
+    <h2>Create Sound Pack</h2>
+
+    <select id="genre">
         <option>Techno</option>
-        <option>Afro Techno</option>
+        <option>Psytrance</option>
+        <option>Afro House</option>
         <option>Melodic Techno</option>
-        <option>Ambient</option>
-        <option>Cinematic</option>
-      </select>
+        <option>Progressive</option>
+    </select>
 
-      <select id="soundType">
+    <select id="soundType">
         <option>Kick</option>
         <option>Bass</option>
-        <option>Percussion</option>
-        <option>Atmosphere</option>
         <option>FX</option>
         <option>Lead</option>
-        <option>Vocal Chop</option>
-        <option>Full Pack</option>
-      </select>
+        <option>Atmosphere</option>
+    </select>
 
-      <button onclick="generateIdea()">Generate Sound Idea</button>
+    <button onclick="generateIdea()">
+        Generate Sound Idea
+    </button>
 
-      <div id="progressContainer">
-        <div id="progressBar"></div>
-      </div>
+    <div id="loadingContainer" style="display:none;">
 
-      <p id="status"></p>
+        <button id="closeBanner" onclick="closeBanner()">✖</button>
 
-      <div id="result"></div>
-    </section>
-  </main>
+        <div id="loadingBar"></div>
 
-  <footer>
-    Created by Gili ALT LOC Hadar
-  </footer>
+        <p id="statusText">Generation Complete ✅</p>
 
-  <script>
-    let generatedText = "";
+    </div>
 
-    function generateIdea() {
-      const genre = document.getElementById("genre").value;
-      const type = document.getElementById("soundType").value;
+    <div id="result">
 
-      const progressContainer = document.getElementById("progressContainer");
-      const progressBar = document.getElementById("progressBar");
-      const status = document.getElementById("status");
-      const result = document.getElementById("result");
+        <h2>🔥 Generated Idea:</h2>
 
-      progressContainer.style.display = "block";
-      progressBar.style.width = "0%";
-      status.innerHTML = "Generating...";
-      result.innerHTML = "";
+        <p id="ideaText">
+            Waiting for generation...
+        </p>
 
-      let width = 0;
+    </div>
 
-      const interval = setInterval(function () {
-        width += 5;
-        progressBar.style.width = width + "%";
+</div>
 
-        if (width >= 100) {
-          clearInterval(interval);
+<script>
 
-          const ideas = [
-            `${genre} cinematic trailer sounds with deep ${type} layers`,
-            `${genre} rolling groove ${type} with analog warmth`,
-            `${genre} metallic FM ${type} textures with wide stereo movement`,
-            `${genre} festival-ready ${type} pack with punchy transient design`,
-            `${genre} dark psychedelic ${type} atmosphere with robotic details`,
-            `${genre} sunrise vibe ${type} sound design with emotional energy`,
-            `${genre} aggressive distorted ${type} collection for peak-time drops`,
-            `${genre} futuristic robotic ${type} elements with glitch movement`,
-            `${genre} hypnotic tribal ${type} patterns with organic percussion`,
-            `${genre} wide ambient ${type} soundscape with deep space reverb`
-          ];
+function closeBanner(){
+    document.getElementById("loadingContainer").style.display = "none";
+}
 
-          generatedText = ideas[Math.floor(Math.random() * ideas.length)];
+function generateIdea(){
 
-          status.innerHTML = "Generation Complete ✅";
+    const genre = document.getElementById("genre").value;
+    const type = document.getElementById("soundType").value;
 
-          result.innerHTML = `
-            <div class="result-box">
-              <div class="result-title">🔥 Generated Idea:</div>
-              <div>${generatedText}</div>
-              <button class="small-btn" onclick="copyIdea()">Copy Prompt</button>
-            </div>
-          `;
-        }
-      }, 70);
-    }
+    const ideas = [
 
-    function copyIdea() {
-      if (!generatedText) {
-        alert("Generate an idea first");
-        return;
-      }
+        `${genre} cinematic ${type} with huge festival energy`,
+        `${genre} dark underground ${type} pack`,
+        `${genre} aggressive distorted ${type} collection`,
+        `${genre} atmospheric dreamy ${type} textures`,
+        `${genre} psytrance festival drops and risers collection`,
+        `${genre} analog warm ${type} sounds`,
+        `${genre} futuristic robotic ${type} kit`,
+        `${genre} industrial warehouse ${type} pack`,
+        `${genre} emotional melodic ${type} soundbank`
 
-      navigator.clipboard.writeText(generatedText)
-        .then(function () {
-          alert("Prompt copied!");
-        })
-        .catch(function () {
-          alert("Copy failed. You can copy the text manually.");
-        });
-    }
-  </script>
+    ];
+
+    const randomIdea =
+        ideas[Math.floor(Math.random() * ideas.length)];
+
+    document.getElementById("ideaText").innerText =
+        randomIdea;
+
+    document.getElementById("loadingContainer").style.display =
+        "block";
+
+    setTimeout(() => {
+        document.getElementById("loadingContainer").style.display =
+            "none";
+    }, 5000);
+
+}
+
+</script>
 
 </body>
 </html>
