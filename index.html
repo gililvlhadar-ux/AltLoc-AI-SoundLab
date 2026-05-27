@@ -3,490 +3,299 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>AltLoc AI SoundLab</title>
 
 <style>
-body{margin:0;background:#0a0a0a;color:white;font-family:Arial,sans-serif;text-align:center}
-header{padding:30px;background:linear-gradient(135deg,#111,#1d1d1d)}
-h1{margin:0;font-size:36px;color:#00ffcc}
-p{color:#bbb}
-.container{width:90%;max-width:560px;margin:30px auto;background:#161616;padding:25px;border-radius:20px;box-shadow:0 0 25px rgba(0,255,204,0.15)}
-select,button{width:100%;padding:18px;margin-top:18px;border:none;border-radius:16px;font-size:18px}
-button{background:#00ffcc;color:black;font-weight:bold;cursor:pointer}
-button:hover{opacity:.9}
-#audioPlayer{width:100%;margin-top:25px}
-#status{margin-top:15px;color:#00ffcc;font-size:18px}
-.hidden{display:none}
-.downloadBtn{background:#222;color:white}
-.changeBtn{background:#333;color:#00ffcc}
-.loopBtn{background:#5511ff;color:white}
-.variationBtn{background:#202020;color:white;border:1px solid #00ffcc}
-#aiImage{width:100%;margin-top:20px;border-radius:16px;display:none}
-.variationBox{margin-top:18px;padding:15px;background:#0f0f0f;border-radius:16px;border:1px solid #333}
+
+body{
+    margin:0;
+    background:#0a0a0a;
+    color:white;
+    font-family:Arial,sans-serif;
+    text-align:center;
+}
+
+header{
+    padding:30px;
+    background:linear-gradient(135deg,#111,#1d1d1d);
+}
+
+h1{
+    margin:0;
+    font-size:38px;
+    color:#00ffcc;
+}
+
+p{
+    color:#aaa;
+}
+
+.container{
+    width:90%;
+    max-width:500px;
+    margin:auto;
+    padding:20px;
+}
+
+.box{
+    background:#151515;
+    padding:20px;
+    border-radius:20px;
+    margin-top:20px;
+    box-shadow:0 0 20px rgba(0,255,204,0.15);
+}
+
+select,
+button{
+    width:100%;
+    padding:15px;
+    margin-top:15px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+}
+
+select{
+    background:#222;
+    color:white;
+}
+
+button{
+    background:#00ffcc;
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.03);
+}
+
+#loadingBox{
+    display:none;
+    margin-top:20px;
+}
+
+.progressBar{
+    width:100%;
+    height:20px;
+    background:#222;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress{
+    width:0%;
+    height:100%;
+    background:#00ffcc;
+    transition:0.2s;
+}
+
+#result{
+    margin-top:20px;
+    padding:20px;
+    background:#111;
+    border-radius:15px;
+    text-align:left;
+    white-space:pre-wrap;
+    display:none;
+}
+
+.downloads{
+    margin-top:20px;
+}
+
+.downloads button{
+    background:#222;
+    color:#00ffcc;
+}
+
+footer{
+    margin-top:40px;
+    padding:20px;
+    color:#555;
+}
+
 </style>
 </head>
-
 <body>
 
 <header>
-<h1>AltLoc AI SoundLab</h1>
-<p>Create real production sounds by scale, chord and BPM</p>
+    <h1>AltLoc AI SoundLab</h1>
+    <p>Create futuristic AI sound ideas instantly</p>
 </header>
 
 <div class="container">
 
-<h2>Generate Sound</h2>
+    <div class="box">
 
-<select id="genre">
-<option>Techno</option>
-<option>Psytrance</option>
-<option>Afro House</option>
-<option>Melodic Techno</option>
-<option>Progressive</option>
-</select>
+        <select id="genre">
+            <option>Psytrance</option>
+            <option>Progressive Techno</option>
+            <option>Afro House</option>
+            <option>Melodic Techno</option>
+            <option>Drum & Bass</option>
+        </select>
 
-<select id="soundType">
-<option>Kick</option>
-<option>Bass</option>
-<option>Lead</option>
-<option>FX</option>
-<option>Atmosphere</option>
-</select>
+        <select id="soundType">
+            <option>Kick</option>
+            <option>Bassline</option>
+            <option>Lead</option>
+            <option>Atmosphere</option>
+            <option>FX</option>
+            <option>Full Loop</option>
+        </select>
 
-<select id="rootNote">
-<option>C</option><option>C#</option><option>D</option><option>D#</option>
-<option>E</option><option>F</option><option>F#</option><option>G</option>
-<option>G#</option><option>A</option><option>A#</option><option>B</option>
-</select>
+        <select id="bars">
+            <option>One Shot</option>
+            <option>4 Bars</option>
+            <option>8 Bars</option>
+            <option>16 Bars</option>
+            <option>32 Bars</option>
+        </select>
 
-<select id="musicMode">
-<option value="minor">Minor Scale</option>
-<option value="major">Major Scale</option>
-<option value="harmonicMinor">Harmonic Minor</option>
-<option value="phrygian">Phrygian</option>
-<option value="dorian">Dorian</option>
-<option value="minorChord">Minor Chord</option>
-<option value="majorChord">Major Chord</option>
-<option value="sus2">Sus2 Chord</option>
-<option value="sus4">Sus4 Chord</option>
-<option value="power">Power Chord</option>
-</select>
+        <button onclick="generateIdea()">
+            Generate AI Sound
+        </button>
 
-<select id="bpm">
-<option value="120">120 BPM</option>
-<option value="128">128 BPM</option>
-<option value="135">135 BPM</option>
-<option value="140">140 BPM</option>
-<option value="145">145 BPM</option>
-</select>
+        <div id="loadingBox">
 
-<select id="structureType">
-<option value="oneshot">One Shot</option>
-<option value="4">4 Bar Loop</option>
-<option value="8">8 Bar Loop</option>
-<option value="16">16 Bar Loop</option>
-<option value="32">32 Bar Loop</option>
-</select>
+            <p>Generating futuristic sound...</p>
 
-<select id="variationCount">
-<option value="3">3 Variations</option>
-<option value="4">4 Variations</option>
-</select>
+            <div class="progressBar">
+                <div class="progress" id="progress"></div>
+            </div>
 
-<select id="variationStyle">
-<option value="main">Main Version</option>
-<option value="continuation">Continuation</option>
-<option value="fill">Fill Version</option>
-<option value="drop">Drop Version</option>
-<option value="dark">Dark Version</option>
-<option value="festival">Festival Version</option>
-</select>
+        </div>
 
-<select id="exportFormat">
-<option value="wav">WAV</option>
-<option value="mp3">MP3 Name</option>
-<option value="flac">FLAC Name</option>
-<option value="midi">MIDI Name</option>
-</select>
+        <div id="result"></div>
 
-<button onclick="generateSound()">Generate Reference Sound</button>
-<button onclick="generateVariationPack()">Generate Variation Pack</button>
-<button onclick="generateAIImage()">🎨 Generate AI Image</button>
+        <div class="downloads" id="downloads" style="display:none;">
 
-<div id="status">Generate a sound to hear preview...</div>
+            <button>
+                Download WAV
+            </button>
 
-<audio id="audioPlayer" controls></audio>
-<img id="aiImage">
+            <button>
+                Download MIDI
+            </button>
 
-<div id="variations"></div>
+            <button>
+                Download Project
+            </button>
 
-<button id="loopBtn" class="loopBtn" onclick="toggleLoop()">🔁 Loop OFF</button>
-<button id="approveBtn" class="hidden" onclick="approveDownload()">✅ I Like This Sound</button>
-<button id="changeBtn" class="hidden changeBtn" onclick="generateSound()">🔄 Generate Another Sound</button>
-<button id="downloadBtn" class="hidden downloadBtn" onclick="downloadSound()">⬇ Download Sound</button>
+        </div>
+
+    </div>
 
 </div>
 
+<footer>
+ALTLOC AI © 2026
+</footer>
+
 <script>
-let audioBlob = null;
-let loopEnabled = false;
-let variationBlobs = [];
-const REPLICATE_API_TOKEN = "PASTE_YOUR_TOKEN_HERE";
 
-const noteFrequencies = {
-"C":261.63,"C#":277.18,"D":293.66,"D#":311.13,"E":329.63,"F":349.23,
-"F#":369.99,"G":392.00,"G#":415.30,"A":440.00,"A#":466.16,"B":493.88
-};
+function generateIdea(){
 
-const patterns = {
-major:[0,2,4,5,7,9,11,12],
-minor:[0,2,3,5,7,8,10,12],
-harmonicMinor:[0,2,3,5,7,8,11,12],
-phrygian:[0,1,3,5,7,8,10,12],
-dorian:[0,2,3,5,7,9,10,12],
-majorChord:[0,4,7,12],
-minorChord:[0,3,7,12],
-sus2:[0,2,7,12],
-sus4:[0,5,7,12],
-power:[0,7,12]
-};
+    const genre =
+    document.getElementById("genre").value;
 
-function getFreq(rootFreq,semitones){
-return rootFreq * Math.pow(2,semitones/12);
+    const type =
+    document.getElementById("soundType").value;
+
+    const bars =
+    document.getElementById("bars").value;
+
+    const loadingBox =
+    document.getElementById("loadingBox");
+
+    const progress =
+    document.getElementById("progress");
+
+    const result =
+    document.getElementById("result");
+
+    const downloads =
+    document.getElementById("downloads");
+
+    loadingBox.style.display="block";
+    result.style.display="none";
+    downloads.style.display="none";
+
+    let percent = 0;
+
+    const interval = setInterval(()=>{
+
+        percent += 5;
+
+        progress.style.width =
+        percent + "%";
+
+        if(percent >= 100){
+
+            clearInterval(interval);
+
+            loadingBox.style.display="none";
+
+            const ideas = [
+
+`Genre: ${genre}
+
+Type: ${type}
+
+Length: ${bars}
+
+Sound Design:
+
+• Deep rolling bass
+• Metallic FM textures
+• Reverse atmospheres
+• Granular glitch effects
+• Stereo movement automation
+• Psytrance-style energy
+• Analog saturation layer
+
+AI Variations:
+
+1. Dark version
+2. Festival version
+3. Atmospheric version
+4. Aggressive version
+
+Recommended Plugins:
+
+• Serum
+• Vital
+• Diva
+• Kontakt
+• Ozone 11
+
+Mix Notes:
+
+• Sidechain compression
+• Wide stereo image
+• Soft clipping
+• Dynamic transient shaping`
+
+            ];
+
+            result.innerText =
+            ideas[Math.floor(Math.random()*ideas.length)];
+
+            result.style.display="block";
+
+            downloads.style.display="block";
+
+        }
+
+    },120);
+
 }
 
-function getSettings(){
-return {
-genre:document.getElementById("genre").value,
-soundType:document.getElementById("soundType").value,
-rootNote:document.getElementById("rootNote").value,
-musicMode:document.getElementById("musicMode").value,
-bpm:parseInt(document.getElementById("bpm").value),
-structure:document.getElementById("structureType").value,
-variationStyle:document.getElementById("variationStyle").value,
-exportFormat:document.getElementById("exportFormat").value
-};
-}
-
-function getDuration(settings){
-if(settings.structure === "oneshot") return 1.2;
-return (60 / settings.bpm) * 4 * parseInt(settings.structure);
-}
-
-function createSoundBlob(settings,variationIndex=0){
-const duration = getDuration(settings);
-const audioContext = new(window.AudioContext || window.webkitAudioContext)();
-const sampleRate = audioContext.sampleRate;
-const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
-const data = buffer.getChannelData(0);
-
-const rootFreq = noteFrequencies[settings.rootNote];
-const selectedPattern = patterns[settings.musicMode];
-const semitone = selectedPattern[(variationIndex + Math.floor(Math.random()*selectedPattern.length)) % selectedPattern.length];
-
-let frequency = getFreq(rootFreq,semitone);
-
-if(settings.soundType === "Kick") frequency = rootFreq / 4;
-if(settings.soundType === "Bass") frequency = rootFreq / 2;
-
-let energy = 1;
-let swing = 0;
-let octave = 1;
-
-if(settings.variationStyle === "continuation"){octave = 1.25; swing = .12}
-if(settings.variationStyle === "fill"){energy = 1.35; swing = .25}
-if(settings.variationStyle === "drop"){energy = 1.6; octave = .75}
-if(settings.variationStyle === "dark"){energy = 1.2; octave = .5}
-if(settings.variationStyle === "festival"){energy = 1.8; octave = 1.5}
-
-frequency *= octave;
-
-for(let i=0;i<data.length;i++){
-const t = i/sampleRate;
-const beatPhase = (t * settings.bpm / 60 + swing * Math.sin(t*8)) % 1;
-let gate = beatPhase < .5 ? 1 : .55;
-let sample = 0;
-
-if(settings.soundType === "Kick"){
-const pitch = frequency * Math.exp(-9*t);
-sample = Math.sin(2*Math.PI*pitch*t) * Math.exp(-8*t);
-sample += (Math.random()*2-1)*0.035;
-}
-
-else if(settings.soundType === "Bass"){
-sample = Math.sin(2*Math.PI*frequency*t);
-sample += Math.sin(2*Math.PI*frequency*.5*t)*.45;
-sample += Math.sin(2*Math.PI*frequency*2*t)*.18;
-sample = Math.tanh(sample*2.8);
-sample *= gate*.75;
-}
-
-else if(settings.soundType === "Lead"){
-const n1 = frequency;
-const n2 = getFreq(rootFreq,selectedPattern[(variationIndex+1)%selectedPattern.length]);
-const n3 = getFreq(rootFreq,selectedPattern[(variationIndex+2)%selectedPattern.length]);
-sample = Math.sin(2*Math.PI*n1*t)*.55 + Math.sin(2*Math.PI*n2*t)*.28 + Math.sin(2*Math.PI*n3*t)*.18;
-sample = Math.tanh(sample*3.2);
-sample *= .75 + .25*Math.sin(2*Math.PI*(settings.bpm/60)*t);
-}
-
-else if(settings.soundType === "FX"){
-const sweep = frequency + frequency*3*t/duration;
-sample = Math.sin(2*Math.PI*sweep*t);
-sample += (Math.random()*2-1)*.38;
-sample *= Math.exp(-1.1*t);
-}
-
-else if(settings.soundType === "Atmosphere"){
-const a = getFreq(rootFreq,selectedPattern[0]);
-const b = getFreq(rootFreq,selectedPattern[1] || 3);
-const c = getFreq(rootFreq,selectedPattern[2] || 7);
-sample = Math.sin(2*Math.PI*a*t)*.22 + Math.sin(2*Math.PI*b*t)*.2 + Math.sin(2*Math.PI*c*t)*.18;
-sample += (Math.random()*2-1)*.035;
-sample *= .85;
-}
-
-sample *= energy;
-data[i] = Math.max(-1,Math.min(1,sample));
-}
-
-return bufferToWave(buffer,buffer.length);
-}
-
-function generateSound(){
-document.getElementById("approveBtn").classList.add("hidden");
-document.getElementById("downloadBtn").classList.add("hidden");
-
-const settings = getSettings();
-const status = document.getElementById("status");
-
-status.innerText = "Generating sound preview...";
-
-audioBlob = createSoundBlob(settings,0);
-
-const audioURL = URL.createObjectURL(audioBlob);
-const player = document.getElementById("audioPlayer");
-
-player.src = audioURL;
-player.loop = loopEnabled;
-player.currentTime = 0;
-player.play();
-
-document.getElementById("approveBtn").classList.remove("hidden");
-document.getElementById("changeBtn").classList.remove("hidden");
-
-status.innerText =
-settings.genre + " " + settings.soundType + " | " +
-settings.rootNote + " " + settings.musicMode + " | " +
-settings.bpm + " BPM | " + settings.structure + " ready ✅";
-}
-
-function generateVariationPack(){
-const settings = getSettings();
-const count = parseInt(document.getElementById("variationCount").value);
-const box = document.getElementById("variations");
-
-variationBlobs = [];
-box.innerHTML = "";
-document.getElementById("status").innerText = "Generating " + count + " variations...";
-
-for(let i=0;i<count;i++){
-const blob = createSoundBlob(settings,i+1);
-variationBlobs.push(blob);
-
-const div = document.createElement("div");
-div.className = "variationBox";
-
-div.innerHTML =
-"<strong>Variation " + String.fromCharCode(65+i) + " - " + settings.variationStyle + "</strong>" +
-"<audio controls style='width:100%;margin-top:10px'></audio>" +
-"<button class='variationBtn' onclick='downloadVariation(" + i + ")'>⬇ Download Variation " + String.fromCharCode(65+i) + "</button>";
-
-box.appendChild(div);
-
-const audio = div.querySelector("audio");
-audio.src = URL.createObjectURL(blob);
-audio.loop = loopEnabled;
-}
-
-document.getElementById("status").innerText = count + " matching variations ready ✅";
-}
-
-function downloadVariation(index){
-const settings = getSettings();
-const format = settings.exportFormat;
-const link = document.createElement("a");
-
-link.href = URL.createObjectURL(variationBlobs[index]);
-link.download =
-"AltLoc-" +
-settings.soundType + "-Variation-" +
-String.fromCharCode(65+index) + "-" +
-settings.rootNote + "-" +
-settings.musicMode + "-" +
-settings.bpm + "BPM." + format;
-
-link.click();
-}
-
-async function generateAIImage(){
-const status = document.getElementById("status");
-const aiImage = document.getElementById("aiImage");
-
-status.innerText = "Sending request to Replicate AI...";
-aiImage.style.display = "none";
-
-try{
-const createResponse = await fetch(
-"https://api.replicate.com/v1/models/black-forest-labs/flux-2-pro/predictions",
-{
-method:"POST",
-headers:{
-"Authorization":"Bearer " + REPLICATE_API_TOKEN,
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-input:{
-prompt:"Glossy futuristic cyberpunk psytrance studio called AltLoc AI SoundLab, neon lights, cinematic atmosphere, electronic music laboratory, 3D text logo",
-resolution:"1 MP",
-aspect_ratio:"1:1",
-input_images:[],
-output_format:"webp",
-output_quality:80,
-safety_tolerance:2
-}
-})
-}
-);
-
-const prediction = await createResponse.json();
-
-if(!prediction.urls || !prediction.urls.get){
-status.innerText = "Replicate error. Check API token.";
-console.log(prediction);
-return;
-}
-
-let result = prediction;
-
-while(result.status !== "succeeded" && result.status !== "failed"){
-await new Promise(resolve => setTimeout(resolve,2000));
-const checkResponse = await fetch(result.urls.get,{
-headers:{"Authorization":"Bearer " + REPLICATE_API_TOKEN}
-});
-result = await checkResponse.json();
-status.innerText = "AI generating... " + result.status;
-}
-
-if(result.status === "failed"){
-status.innerText = "AI generation failed.";
-console.log(result);
-return;
-}
-
-const imageUrl = Array.isArray(result.output) ? result.output[0] : result.output;
-
-aiImage.src = imageUrl;
-aiImage.style.display = "block";
-status.innerText = "AI image ready ✅";
-
-}catch(error){
-status.innerText = "AI Error: " + error.message;
-console.log(error);
-}
-}
-
-function toggleLoop(){
-const player = document.getElementById("audioPlayer");
-loopEnabled = !loopEnabled;
-player.loop = loopEnabled;
-
-document.querySelectorAll("audio").forEach(a => a.loop = loopEnabled);
-
-if(loopEnabled){
-document.getElementById("loopBtn").innerText = "🔁 Loop ON";
-player.play();
-}else{
-document.getElementById("loopBtn").innerText = "🔁 Loop OFF";
-}
-}
-
-function approveDownload(){
-document.getElementById("downloadBtn").classList.remove("hidden");
-document.getElementById("status").innerText = "Sound approved ✅ Download enabled.";
-}
-
-function downloadSound(){
-if(!audioBlob){
-alert("Generate sound first");
-return;
-}
-
-const settings = getSettings();
-const format = settings.exportFormat;
-const link = document.createElement("a");
-
-link.href = URL.createObjectURL(audioBlob);
-link.download =
-"AltLoc-" +
-settings.soundType + "-" +
-settings.rootNote + "-" +
-settings.musicMode + "-" +
-settings.bpm + "BPM-" +
-settings.structure + "." + format;
-
-link.click();
-}
-
-function bufferToWave(abuffer,len){
-const numOfChan = abuffer.numberOfChannels;
-const length = len * numOfChan * 2 + 44;
-const buffer = new ArrayBuffer(length);
-const view = new DataView(buffer);
-const channels = [];
-let offset = 0;
-let pos = 0;
-
-setUint32(0x46464952);
-setUint32(length - 8);
-setUint32(0x45564157);
-setUint32(0x20746d66);
-setUint32(16);
-setUint16(1);
-setUint16(numOfChan);
-setUint32(abuffer.sampleRate);
-setUint32(abuffer.sampleRate * 2 * numOfChan);
-setUint16(numOfChan * 2);
-setUint16(16);
-setUint32(0x61746164);
-setUint32(length - pos - 4);
-
-for(let i=0;i<abuffer.numberOfChannels;i++){
-channels.push(abuffer.getChannelData(i));
-}
-
-while(pos < length){
-for(let i=0;i<numOfChan;i++){
-let sample = Math.max(-1,Math.min(1,channels[i][offset]));
-sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
-view.setInt16(pos,sample,true);
-pos += 2;
-}
-offset++;
-}
-
-function setUint16(data){
-view.setUint16(pos,data,true);
-pos += 2;
-}
-
-function setUint32(data){
-view.setUint32(pos,data,true);
-pos += 4;
-}
-
-return new Blob([buffer],{type:"audio/wav"});
-}
 </script>
 
 </body>
