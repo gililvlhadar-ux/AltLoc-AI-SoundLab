@@ -100,7 +100,7 @@ button:hover{
 
 <h1>AltLoc AI SoundLab</h1>
 
-<p>Create real production sounds by scale or chord</p>
+<p>Create real production sounds by scale, chord and BPM</p>
 
 </header>
 
@@ -157,6 +157,26 @@ button:hover{
 <option value="sus2">Sus2 Chord</option>
 <option value="sus4">Sus4 Chord</option>
 <option value="power">Power Chord</option>
+
+</select>
+
+<select id="bpm">
+
+<option value="120">120 BPM</option>
+<option value="128">128 BPM</option>
+<option value="135">135 BPM</option>
+<option value="140">140 BPM</option>
+<option value="145">145 BPM</option>
+
+</select>
+
+<select id="structureType">
+
+<option value="oneshot">One Shot</option>
+<option value="4">4 Bar Loop</option>
+<option value="8">8 Bar Loop</option>
+<option value="16">16 Bar Loop</option>
+<option value="32">32 Bar Loop</option>
 
 </select>
 
@@ -263,16 +283,41 @@ function generateSound(){
     const musicMode =
         document.getElementById("musicMode").value;
 
+    const bpm =
+        parseInt(
+            document.getElementById("bpm").value
+        );
+
+    const structure =
+        document.getElementById("structureType").value;
+
     const status =
         document.getElementById("status");
 
     status.innerText =
         "Generating sound preview...";
 
+    const beatsPerBar = 4;
+
+    let duration = 1;
+
+    if(structure === "oneshot"){
+
+        duration = 1.2;
+
+    } else {
+
+        const bars =
+            parseInt(structure);
+
+        duration =
+            (60 / bpm) *
+            beatsPerBar *
+            bars;
+    }
+
     const audioContext =
         new(window.AudioContext || window.webkitAudioContext)();
-
-    const duration = 4;
 
     const sampleRate =
         audioContext.sampleRate;
@@ -346,6 +391,14 @@ function generateSound(){
 
         else if(soundType === "Bass"){
 
+            const beat =
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    (bpm / 60) *
+                    t
+                ) > 0 ? 1 : 0.6;
+
             sample =
                 Math.sin(
                     2 *
@@ -375,7 +428,7 @@ function generateSound(){
             sample =
                 Math.tanh(sample * 2.5);
 
-            sample *= 0.75;
+            sample *= beat * 0.75;
         }
 
         else if(soundType === "Lead"){
@@ -420,7 +473,7 @@ function generateSound(){
                 Math.tanh(sample * 3);
 
             sample *=
-                Math.exp(-0.6 * t);
+                Math.exp(-0.4 * t);
         }
 
         else if(soundType === "FX"){
@@ -522,6 +575,8 @@ function generateSound(){
 
     player.loop = loopEnabled;
 
+    player.currentTime = 0;
+
     player.play();
 
     document.getElementById("approveBtn")
@@ -534,10 +589,14 @@ function generateSound(){
         genre +
         " " +
         soundType +
-        " in " +
+        " | " +
         rootNote +
         " " +
         musicMode +
+        " | " +
+        bpm +
+        " BPM | " +
+        structure +
         " ready ✅";
 }
 
@@ -594,6 +653,12 @@ function downloadSound(){
     const mode =
         document.getElementById("musicMode").value;
 
+    const bpm =
+        document.getElementById("bpm").value;
+
+    const structure =
+        document.getElementById("structureType").value;
+
     const link =
         document.createElement("a");
 
@@ -607,6 +672,10 @@ function downloadSound(){
         root +
         "-" +
         mode +
+        "-" +
+        bpm +
+        "BPM-" +
+        structure +
         ".wav";
 
     link.click();
