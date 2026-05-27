@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>AltLoc AI SoundLab</title>
+<title>AltLoc AI PromptLab</title>
 
 <style>
 
@@ -48,6 +48,7 @@ select{
     border:none;
     border-radius:16px;
     font-size:18px;
+    background:white;
 }
 
 button{
@@ -109,16 +110,26 @@ button:hover{
     padding:25px;
     border-radius:18px;
     background:black;
+    text-align:left;
 }
 
 #result h2{
     color:#00ffcc;
     font-size:28px;
+    text-align:center;
 }
 
 #result p{
-    font-size:20px;
+    font-size:18px;
     color:#ddd;
+    line-height:1.6;
+}
+
+.copyBtn{
+    margin-top:15px;
+    background:#00ffcc;
+    color:black;
+    font-size:16px;
 }
 
 </style>
@@ -127,13 +138,13 @@ button:hover{
 <body>
 
 <header>
-    <h1>AltLoc AI SoundLab</h1>
-    <p>AI Sound Pack Generator</p>
+    <h1>AltLoc AI PromptLab</h1>
+    <p>Create professional AI music prompts instantly</p>
 </header>
 
 <div class="box">
 
-    <h2>Create Sound Pack</h2>
+    <h2>Create Sound Prompt</h2>
 
     <select id="genre">
         <option>Techno</option>
@@ -151,8 +162,8 @@ button:hover{
         <option>Atmosphere</option>
     </select>
 
-    <button onclick="generateIdea()">
-        Generate Sound Idea
+    <button onclick="generatePrompt()">
+        Generate Prompt
     </button>
 
     <div id="loadingContainer" style="display:none;">
@@ -161,17 +172,21 @@ button:hover{
 
         <div id="loadingBar"></div>
 
-        <p id="statusText">Generation Complete ✅</p>
+        <p id="statusText">Prompt Generated Successfully ✅</p>
 
     </div>
 
     <div id="result">
 
-        <h2>🔥 Generated Idea:</h2>
+        <h2>🔥 Generated Prompt:</h2>
 
-        <p id="ideaText">
-            Waiting for generation...
+        <p id="promptText">
+            Choose genre and sound type, then generate a professional AI prompt...
         </p>
+
+        <button class="copyBtn" onclick="copyPrompt()">
+            Copy Prompt
+        </button>
 
     </div>
 
@@ -183,30 +198,33 @@ function closeBanner(){
     document.getElementById("loadingContainer").style.display = "none";
 }
 
-function generateIdea(){
+function generatePrompt(){
 
-    const genre = document.getElementById("genre").value;
-    const type = document.getElementById("soundType").value;
+    const genre =
+        document.getElementById("genre").value;
 
-    const ideas = [
+    const type =
+        document.getElementById("soundType").value;
 
-        `${genre} cinematic ${type} with huge festival energy`,
-        `${genre} dark underground ${type} pack`,
-        `${genre} aggressive distorted ${type} collection`,
-        `${genre} atmospheric dreamy ${type} textures`,
-        `${genre} psytrance festival drops and risers collection`,
-        `${genre} analog warm ${type} sounds`,
-        `${genre} futuristic robotic ${type} kit`,
-        `${genre} industrial warehouse ${type} pack`,
-        `${genre} emotional melodic ${type} soundbank`
+    const prompts = [
+
+`${genre} ${type} with cinematic atmosphere, deep stereo image, analog warmth, powerful transient attack, festival-ready energy, ultra clean mix and modern professional mastering.`,
+
+`${genre} dark underground ${type}, distorted textures, aggressive movement, industrial vibe, deep low-end pressure, cinematic FX and futuristic sound design.`,
+
+`${genre} emotional melodic ${type}, atmospheric layers, dreamy ambience, warm analog character, evolving movement and immersive festival feeling.`,
+
+`${genre} futuristic robotic ${type}, metallic textures, FM synthesis, glitch details, modern electronic processing and powerful dynamic energy.`,
+
+`${genre} psychedelic ${type}, wide stereo field, hypnotic groove, evolving modulation, atmospheric depth and massive modern festival production.`
 
     ];
 
-    const randomIdea =
-        ideas[Math.floor(Math.random() * ideas.length)];
+    const randomPrompt =
+        prompts[Math.floor(Math.random() * prompts.length)];
 
-    document.getElementById("ideaText").innerText =
-        randomIdea;
+    document.getElementById("promptText").innerText =
+        randomPrompt;
 
     document.getElementById("loadingContainer").style.display =
         "block";
@@ -215,6 +233,17 @@ function generateIdea(){
         document.getElementById("loadingContainer").style.display =
             "none";
     }, 5000);
+
+}
+
+function copyPrompt(){
+
+    const text =
+        document.getElementById("promptText").innerText;
+
+    navigator.clipboard.writeText(text);
+
+    alert("Prompt copied ✅");
 
 }
 
