@@ -1,253 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<title>AltLoc AI PromptLab</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AltLoc AI SoundLab</title>
 
 <style>
-
 body{
     margin:0;
-    font-family:Arial,sans-serif;
-    background:#090909;
+    background:#0a0a0a;
     color:white;
+    font-family:Arial,sans-serif;
     text-align:center;
 }
-
 header{
-    padding:30px 20px;
-    background:linear-gradient(135deg,#111,#222);
+    padding:30px;
+    background:linear-gradient(135deg,#111,#1d1d1d);
 }
-
 h1{
-    font-size:34px;
     margin:0;
+    font-size:36px;
     color:#00ffcc;
 }
-
-p{
-    color:#ccc;
-}
-
-.box{
-    margin:25px auto;
-    padding:20px;
-    width:85%;
-    max-width:420px;
+p{color:#bbb;}
+.container{
+    width:90%;
+    max-width:500px;
+    margin:30px auto;
     background:#161616;
-    border-radius:18px;
-    box-shadow:0 0 20px rgba(0,255,204,0.15);
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 0 25px rgba(0,255,204,0.15);
 }
-
-select{
+select,button{
     width:100%;
     padding:18px;
     margin-top:18px;
     border:none;
     border-radius:16px;
     font-size:18px;
-    background:white;
 }
-
 button{
-    margin-top:22px;
-    width:100%;
-    padding:18px;
-    border:none;
-    border-radius:18px;
-    background:#11f0c8;
-    color:black;
-    font-size:20px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-button:hover{
-    opacity:0.9;
-}
-
-#loadingContainer{
-    position:relative;
-    margin-top:20px;
-}
-
-#loadingBar{
-    width:100%;
-    height:18px;
-    background:#11f0c8;
-    border-radius:20px;
-    animation:loading 2s linear infinite;
-}
-
-#closeBanner{
-    position:absolute;
-    top:-12px;
-    right:0;
-    background:transparent;
-    border:none;
-    color:white;
-    font-size:22px;
-    cursor:pointer;
-    width:auto;
-    padding:0;
-}
-
-#statusText{
-    margin-top:12px;
-    color:#aaa;
-}
-
-@keyframes loading{
-    0%{opacity:0.4;}
-    50%{opacity:1;}
-    100%{opacity:0.4;}
-}
-
-#result{
-    margin-top:28px;
-    padding:25px;
-    border-radius:18px;
-    background:black;
-    text-align:left;
-}
-
-#result h2{
-    color:#00ffcc;
-    font-size:28px;
-    text-align:center;
-}
-
-#result p{
-    font-size:18px;
-    color:#ddd;
-    line-height:1.6;
-}
-
-.copyBtn{
-    margin-top:15px;
     background:#00ffcc;
-    color:black;
-    font-size:16px;
-}
-
-</style>
-</head>
-
-<body>
-
-<header>
-    <h1>AltLoc AI PromptLab</h1>
-    <p>Create professional AI music prompts instantly</p>
-</header>
-
-<div class="box">
-
-    <h2>Create Sound Prompt</h2>
-
-    <select id="genre">
-        <option>Techno</option>
-        <option>Psytrance</option>
-        <option>Afro House</option>
-        <option>Melodic Techno</option>
-        <option>Progressive</option>
-    </select>
-
-    <select id="soundType">
-        <option>Kick</option>
-        <option>Bass</option>
-        <option>FX</option>
-        <option>Lead</option>
-        <option>Atmosphere</option>
-    </select>
-
-    <button onclick="generatePrompt()">
-        Generate Prompt
-    </button>
-
-    <div id="loadingContainer" style="display:none;">
-
-        <button id="closeBanner" onclick="closeBanner()">✖</button>
-
-        <div id="loadingBar"></div>
-
-        <p id="statusText">Prompt Generated Successfully ✅</p>
-
-    </div>
-
-    <div id="result">
-
-        <h2>🔥 Generated Prompt:</h2>
-
-        <p id="promptText">
-            Choose genre and sound type, then generate a professional AI prompt...
-        </p>
-
-        <button class="copyBtn" onclick="copyPrompt()">
-            Copy Prompt
-        </button>
-
-    </div>
-
-</div>
-
-<script>
-
-function closeBanner(){
-    document.getElementById("loadingContainer").style.display = "none";
-}
-
-function generatePrompt(){
-
-    const genre =
-        document.getElementById("genre").value;
-
-    const type =
-        document.getElementById("soundType").value;
-
-    const prompts = [
-
-`${genre} ${type} with cinematic atmosphere, deep stereo image, analog warmth, powerful transient attack, festival-ready energy, ultra clean mix and modern professional mastering.`,
-
-`${genre} dark underground ${type}, distorted textures, aggressive movement, industrial vibe, deep low-end pressure, cinematic FX and futuristic sound design.`,
-
-`${genre} emotional melodic ${type}, atmospheric layers, dreamy ambience, warm analog character, evolving movement and immersive festival feeling.`,
-
-`${genre} futuristic robotic ${type}, metallic textures, FM synthesis, glitch details, modern electronic processing and powerful dynamic energy.`,
-
-`${genre} psychedelic ${type}, wide stereo field, hypnotic groove, evolving modulation, atmospheric depth and massive modern festival production.`
-
-    ];
-
-    const randomPrompt =
-        prompts[Math.floor(Math.random() * prompts.length)];
-
-    document.getElementById("promptText").innerText =
-        randomPrompt;
-
-    document.getElementById("loadingContainer").style.display =
-        "block";
-
-    setTimeout(() => {
-        document.getElementById("loadingContainer").style.display =
-            "none";
-    }, 5000);
-
-}
-
-function copyPrompt(){
-
-    const text =
-        document.getElementById("promptText").innerText;
-
-    navigator.clipboard.writeText(text);
-
-    alert("Prompt copied ✅");
-
-}
-
-</script>
-
-</body>
-</html>
+    color
