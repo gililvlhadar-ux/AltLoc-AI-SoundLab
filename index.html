@@ -98,11 +98,48 @@
 
     <script>
 function generateIdea() {
-
 const genre = document.getElementById("genre").value;
 const type = document.getElementById("soundType").value;
 
 const ideas = {
+    "Techno": {
+        "Bass": [
+            "Dark rolling warehouse bass with analog saturation",
+            "Industrial distorted techno bass for peak-time tracks",
+            "Deep hypnotic low-end with FM movement"
+        ],
+        "Lead": [
+            "Acid lead with aggressive resonance automation",
+            "Melodic rave synth inspired by Berlin techno",
+            "Hypnotic analog lead with delay textures"
+        ]
+    },
+
+    "Psytrance": {
+        "Bass": [
+            "Fast offbeat psy bass with punchy attack",
+            "Deep psychedelic groove bass for festival drops",
+            "Rolling forest psy bass with stereo motion"
+        ],
+        "Lead": [
+            "Alien FM psy lead with glitch effects",
+            "Spiritual Goa-style melodic lead",
+            "Aggressive psychedelic screech lead"
+        ]
+    }
+};
+
+const randomIdea =
+    ideas[genre][type][
+        Math.floor(Math.random() * ideas[genre][type].length)
+    ];
+
+document.getElementById("result").innerHTML = `
+    <h2>${genre} ${type}</h2>
+    <p>${randomIdea}</p>
+    <p>Status: AI Generator Active</p>
+`;
+ {
 
 Psytrance: {
 Kick: [
