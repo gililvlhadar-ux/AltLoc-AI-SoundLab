@@ -42,4 +42,244 @@ select,button{
 }
 button{
     background:#00ffcc;
-    color
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+}
+button:hover{opacity:0.9;}
+#audioPlayer{
+    width:100%;
+    margin-top:25px;
+}
+#status{
+    margin-top:15px;
+    color:#00ffcc;
+    font-size:18px;
+}
+.hidden{
+    display:none;
+}
+.downloadBtn{
+    background:#222;
+    color:white;
+}
+.changeBtn{
+    background:#333;
+    color:#00ffcc;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>AltLoc AI SoundLab</h1>
+<p>Create real sounds for music production</p>
+</header>
+
+<div class="container">
+
+<h2>Generate Sound</h2>
+
+<select id="genre">
+<option>Techno</option>
+<option>Psytrance</option>
+<option>Afro House</option>
+<option>Melodic Techno</option>
+<option>Progressive</option>
+</select>
+
+<select id="soundType">
+<option>Kick</option>
+<option>Bass</option>
+<option>Lead</option>
+<option>FX</option>
+<option>Atmosphere</option>
+</select>
+
+<button onclick="generateSound()">Generate Reference Sound</button>
+
+<div id="status">Generate a sound to hear reference...</div>
+
+<audio id="audioPlayer" controls></audio>
+
+<button id="approveBtn" class="hidden" onclick="approveDownload()">
+✅ I Like It — Enable Download
+</button>
+
+<button id="changeBtn" class="hidden changeBtn" onclick="generateSound()">
+🔄 Change Sound
+</button>
+
+<button id="downloadBtn" class="hidden downloadBtn" onclick="downloadSound()">
+Download WAV
+</button>
+
+</div>
+
+<script>
+
+let audioBlob = null;
+let variation = 0;
+
+function generateSound(){
+
+    variation++;
+
+    document.getElementById("approveBtn").classList.add("hidden");
+    document.getElementById("downloadBtn").classList.add("hidden");
+    document.getElementById("changeBtn").classList.add("hidden");
+
+    const genre = document.getElementById("genre").value;
+    const soundType = document.getElementById("soundType").value;
+    const status = document.getElementById("status");
+
+    status.innerText = "Generating reference sound...";
+
+    const audioContext = new(window.AudioContext || window.webkitAudioContext)();
+    const duration = 2;
+    const sampleRate = audioContext.sampleRate;
+
+    const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
+    const data = buffer.getChannelData(0);
+
+    let frequency = 120 + Math.random() * 80;
+
+    if(soundType === "Kick") frequency = 45 + Math.random() * 35;
+    if(soundType === "Bass") frequency = 70 + Math.random() * 50;
+    if(soundType === "Lead") frequency = 300 + Math.random() * 500;
+    if(soundType === "FX") frequency = 500 + Math.random() * 900;
+    if(soundType === "Atmosphere") frequency = 120 + Math.random() * 180;
+
+    for(let i = 0; i < data.length; i++){
+
+        const t = i / sampleRate;
+        let sample = 0;
+
+        if(soundType === "Kick"){
+            const pitch = frequency * Math.exp(-8 * t);
+            sample = Math.sin(2 * Math.PI * pitch * t) * Math.exp(-6 * t);
+        }
+
+        else if(soundType === "Bass"){
+            sample = Math.sin(2 * Math.PI * frequency * t) * 0.7;
+            sample += Math.sin(2 * Math.PI * frequency * 0.5 * t) * 0.3;
+            sample *= Math.exp(-1.5 * t);
+        }
+
+        else if(soundType === "Lead"){
+            sample = Math.sin(2 * Math.PI * frequency * t);
+            sample += Math.sin(2 * Math.PI * frequency * 2 * t) * 0.35;
+            sample *= Math.exp(-1.2 * t);
+        }
+
+        else if(soundType === "FX"){
+            const sweep = frequency - (frequency * 0.8 * t / duration);
+            sample = Math.sin(2 * Math.PI * sweep * t);
+            sample += (Math.random() * 2 - 1) * 0.25;
+            sample *= Math.exp(-2 * t);
+        }
+
+        else if(soundType === "Atmosphere"){
+            sample = Math.sin(2 * Math.PI * frequency * t) * 0.4;
+            sample += Math.sin(2 * Math.PI * frequency * 1.5 * t) * 0.25;
+            sample += (Math.random() * 2 - 1) * 0.08;
+            sample *= Math.exp(-0.5 * t);
+        }
+
+        data[i] = Math.max(-1, Math.min(1, sample * 0.6));
+    }
+
+    const wavBlob = bufferToWave(buffer, buffer.length);
+    audioBlob = wavBlob;
+
+    const audioURL = URL.createObjectURL(wavBlob);
+    const player = document.getElementById("audioPlayer");
+
+    player.src = audioURL;
+    player.play();
+
+    status.innerText = genre + " " + soundType + " reference ready ✅";
+
+    document.getElementById("approveBtn").classList.remove("hidden");
+    document.getElementById("changeBtn").classList.remove("hidden");
+}
+
+function approveDownload(){
+
+    document.getElementById("downloadBtn").classList.remove("hidden");
+    document.getElementById("status").innerText =
+        "Sound approved ✅ Download is now available.";
+}
+
+function downloadSound(){
+
+    if(!audioBlob){
+        alert("Generate a sound first");
+        return;
+    }
+
+    const soundType = document.getElementById("soundType").value;
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(audioBlob);
+    link.download = "AltLoc-" + soundType + "-Sound.wav";
+    link.click();
+}
+
+function bufferToWave(abuffer,len){
+
+    const numOfChan = abuffer.numberOfChannels;
+    const length = len * numOfChan * 2 + 44;
+    const buffer = new ArrayBuffer(length);
+    const view = new DataView(buffer);
+    const channels = [];
+
+    let offset = 0;
+    let pos = 0;
+
+    setUint32(0x46464952);
+    setUint32(length - 8);
+    setUint32(0x45564157);
+    setUint32(0x20746d66);
+    setUint32(16);
+    setUint16(1);
+    setUint16(numOfChan);
+    setUint32(abuffer.sampleRate);
+    setUint32(abuffer.sampleRate * 2 * numOfChan);
+    setUint16(numOfChan * 2);
+    setUint16(16);
+    setUint32(0x61746164);
+    setUint32(length - pos - 4);
+
+    for(let i = 0; i < abuffer.numberOfChannels; i++){
+        channels.push(abuffer.getChannelData(i));
+    }
+
+    while(pos < length){
+        for(let i = 0; i < numOfChan; i++){
+            let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+            sample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+            view.setInt16(pos, sample, true);
+            pos += 2;
+        }
+        offset++;
+    }
+
+    function setUint16(data){
+        view.setUint16(pos,data,true);
+        pos += 2;
+    }
+
+    function setUint32(data){
+        view.setUint32(pos,data,true);
+        pos += 4;
+    }
+
+    return new Blob([buffer], {type:"audio/wav"});
+}
+
+</script>
+
+</body>
+</html>
