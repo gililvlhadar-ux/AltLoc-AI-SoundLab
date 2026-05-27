@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AltLoc AI SoundLab</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -15,81 +19,117 @@
     }
 
     header {
-      padding: 30px 20px;
+      padding: 45px 20px 55px;
       background: linear-gradient(135deg, #111, #222);
     }
 
     h1 {
-      font-size: 34px;
+      font-size: 40px;
       margin: 0;
       color: #00ffcc;
+      letter-spacing: 1px;
     }
 
-    p {
+    header p {
       color: #ccc;
+      font-size: 20px;
+      margin-top: 18px;
     }
 
     .box {
-      margin: 25px auto;
-      padding: 20px;
-      width: 85%;
-      max-width: 420px;
+      margin: 45px auto;
+      padding: 28px 24px;
+      width: 88%;
+      max-width: 460px;
       background: #161616;
-      border-radius: 18px;
-      box-shadow: 0 0 20px #00ffcc33;
+      border-radius: 24px;
+      box-shadow: 0 0 35px rgba(0, 255, 204, 0.22);
     }
 
-    select,
+    h2 {
+      font-size: 30px;
+      margin-bottom: 28px;
+    }
+
+    select {
+      width: 100%;
+      padding: 18px;
+      margin: 9px 0;
+      border: none;
+      border-radius: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      background: #eeeeee;
+      color: #000;
+    }
+
     button {
       width: 100%;
-      padding: 14px;
-      margin-top: 15px;
-      border-radius: 12px;
+      margin-top: 18px;
+      padding: 19px;
       border: none;
-      font-size: 16px;
-    }
-
-    button {
-      background: #00ffcc;
+      border-radius: 15px;
+      background: #00ddbb;
       color: #000;
+      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
     }
 
-    button:hover {
-      opacity: 0.9;
+    button:active {
+      transform: scale(0.98);
     }
 
-    .progress-container {
+    #progressContainer {
       width: 100%;
-      height: 12px;
+      height: 16px;
       background: #222;
-      border-radius: 20px;
-      margin-top: 20px;
+      border-radius: 30px;
       overflow: hidden;
+      margin-top: 24px;
       display: none;
     }
 
-    .progress-bar {
-      height: 100%;
+    #progressBar {
       width: 0%;
+      height: 100%;
       background: #00ffcc;
       transition: width 0.2s;
     }
 
-    .result {
-      margin-top: 20px;
-      padding: 15px;
-      background: #000;
-      border-radius: 12px;
-      color: #00ffcc;
-      min-height: 80px;
+    #status {
+      margin-top: 18px;
+      color: #bbb;
+      font-size: 18px;
+      min-height: 25px;
     }
 
-    .loading-text {
-      margin-top: 10px;
-      color: #aaa;
+    .result-box {
+      background: #000;
+      padding: 28px 18px;
+      border-radius: 18px;
+      margin-top: 22px;
+      font-size: 20px;
+      line-height: 1.45;
+    }
+
+    .result-title {
+      color: #00ffcc;
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .small-btn {
+      margin-top: 18px;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 12px;
+    }
+
+    footer {
+      color: #666;
+      padding: 25px;
       font-size: 14px;
     }
   </style>
@@ -102,101 +142,115 @@
     <p>AI Sound Pack Generator</p>
   </header>
 
-  <div class="box">
+  <main>
+    <section class="box">
+      <h2>Create Sound Pack</h2>
 
-    <h2>Create Sound Pack</h2>
+      <select id="genre">
+        <option>Psytrance</option>
+        <option>Progressive Psytrance</option>
+        <option>Techno</option>
+        <option>Afro Techno</option>
+        <option>Melodic Techno</option>
+        <option>Ambient</option>
+        <option>Cinematic</option>
+      </select>
 
-    <select id="style">
-      <option value="Psytrance">Psytrance</option>
-      <option value="Techno">Techno</option>
-      <option value="Afro House">Afro House</option>
-      <option value="Cinematic">Cinematic</option>
-      <option value="Trap">Trap</option>
-    </select>
+      <select id="soundType">
+        <option>Kick</option>
+        <option>Bass</option>
+        <option>Percussion</option>
+        <option>Atmosphere</option>
+        <option>FX</option>
+        <option>Lead</option>
+        <option>Vocal Chop</option>
+        <option>Full Pack</option>
+      </select>
 
-    <select id="type">
-      <option value="Kick">Kick</option>
-      <option value="Bass">Bass</option>
-      <option value="FX">FX</option>
-      <option value="Vocal Chop">Vocal Chop</option>
-      <option value="Full Pack">Full Pack</option>
-    </select>
+      <button onclick="generateIdea()">Generate Sound Idea</button>
 
-  <button onclick="alert('Button works'); generateIdea();">
-  Generate Sound Idea
-</button>
+      <div id="progressContainer">
+        <div id="progressBar"></div>
+      </div>
 
-    <div class="progress-container" id="progressContainer">
-      <div class="progress-bar" id="progressBar"></div>
-    </div>
+      <p id="status"></p>
 
-    <div class="loading-text" id="loadingText"></div>
+      <div id="result"></div>
+    </section>
+  </main>
 
-    <div class="result" id="result">
-      Your sound pack idea will appear here...
-    </div>
-
-  </div>
+  <footer>
+    Created by Gili ALT LOC Hadar
+  </footer>
 
   <script>
+    let generatedText = "";
 
     function generateIdea() {
+      const genre = document.getElementById("genre").value;
+      const type = document.getElementById("soundType").value;
 
-      const genre = document.getElementById("style").value;
-      const type = document.getElementById("type").value;
-
-      const result = document.getElementById("result");
-      const progressBar = document.getElementById("progressBar");
       const progressContainer = document.getElementById("progressContainer");
-      const loadingText = document.getElementById("loadingText");
+      const progressBar = document.getElementById("progressBar");
+      const status = document.getElementById("status");
+      const result = document.getElementById("result");
 
       progressContainer.style.display = "block";
-
-      let progress = 0;
-
+      progressBar.style.width = "0%";
+      status.innerHTML = "Generating...";
       result.innerHTML = "";
-      loadingText.innerHTML = "Generating AI Sound Pack...";
 
-      const interval = setInterval(() => {
+      let width = 0;
 
-        progress += 5;
+      const interval = setInterval(function () {
+        width += 5;
+        progressBar.style.width = width + "%";
 
-        progressBar.style.width = progress + "%";
-
-        loadingText.innerHTML =
-          "Generating AI Sound Pack... " + progress + "%";
-
-        if (progress >= 100) {
-
+        if (width >= 100) {
           clearInterval(interval);
 
           const ideas = [
-            `Dark ${genre} kick pack with cinematic impacts`,
-            `${genre} vocal chops and ${type} textures`,
-            `Industrial ${genre} transition FX pack`,
-            `${genre} bass one-shots with analog warmth`,
-            `${type} atmospheres for ${genre} producers`,
-            `${genre} festival drops and risers collection`,
             `${genre} cinematic trailer sounds with deep ${type} layers`,
-            `Heavy ${genre} groove pack for underground producers`,
-            `${type} toolkit inspired by futuristic rave culture`
+            `${genre} rolling groove ${type} with analog warmth`,
+            `${genre} metallic FM ${type} textures with wide stereo movement`,
+            `${genre} festival-ready ${type} pack with punchy transient design`,
+            `${genre} dark psychedelic ${type} atmosphere with robotic details`,
+            `${genre} sunrise vibe ${type} sound design with emotional energy`,
+            `${genre} aggressive distorted ${type} collection for peak-time drops`,
+            `${genre} futuristic robotic ${type} elements with glitch movement`,
+            `${genre} hypnotic tribal ${type} patterns with organic percussion`,
+            `${genre} wide ambient ${type} soundscape with deep space reverb`
           ];
 
-          const randomIdea =
-            ideas[Math.floor(Math.random() * ideas.length)];
+          generatedText = ideas[Math.floor(Math.random() * ideas.length)];
 
-          result.innerHTML =
-            "<h2>🔥 Generated Idea:</h2><p>" +
-            randomIdea +
-            "</p>";
+          status.innerHTML = "Generation Complete ✅";
 
-          loadingText.innerHTML = "Generation Complete ✅";
+          result.innerHTML = `
+            <div class="result-box">
+              <div class="result-title">🔥 Generated Idea:</div>
+              <div>${generatedText}</div>
+              <button class="small-btn" onclick="copyIdea()">Copy Prompt</button>
+            </div>
+          `;
         }
-
-      }, 100);
-
+      }, 70);
     }
 
+    function copyIdea() {
+      if (!generatedText) {
+        alert("Generate an idea first");
+        return;
+      }
+
+      navigator.clipboard.writeText(generatedText)
+        .then(function () {
+          alert("Prompt copied!");
+        })
+        .catch(function () {
+          alert("Copy failed. You can copy the text manually.");
+        });
+    }
   </script>
 
 </body>
