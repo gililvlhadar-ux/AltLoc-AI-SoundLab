@@ -98,10 +98,83 @@
 
     <script>
 function generateIdea() {
-const genre = document.getElementById("genre").value;
-const type = document.getElementById("soundType").value;
+function generateIdea() {
 
-const ideas = {
+    const genre = document.getElementById("genre").value;
+    const type = document.getElementById("soundType").value;
+
+    document.getElementById("result").innerHTML = `
+        <div style="width:100%;background:#222;border-radius:20px;overflow:hidden;margin-top:20px;">
+            <div id="progressBar" style="
+                width:0%;
+                height:30px;
+                background:#00ffd5;
+                text-align:center;
+                line-height:30px;
+                color:black;
+                font-weight:bold;
+                transition:0.3s;
+            ">0%</div>
+        </div>
+
+        <p style="margin-top:15px;">Generating AI Sound Pack...</p>
+    `;
+
+    let progress = 0;
+
+    const interval = setInterval(() => {
+
+        progress += 10;
+
+        document.getElementById("progressBar").style.width = progress + "%";
+        document.getElementById("progressBar").innerHTML = progress + "%";
+
+        if (progress >= 100) {
+
+            clearInterval(interval);
+
+            const ideas = {
+                "Techno": {
+                    "Bass": [
+                        "Dark warehouse bass with analog saturation",
+                        "Industrial distorted techno bass",
+                        "Deep hypnotic rolling bass"
+                    ],
+                    "Lead": [
+                        "Acid techno lead with resonance sweeps",
+                        "Berlin-style rave synth lead",
+                        "Hypnotic melodic techno lead"
+                    ]
+                },
+
+                "Psytrance": {
+                    "Bass": [
+                        "Fast offbeat psy bass",
+                        "Festival psychedelic groove bass",
+                        "Rolling forest psy bass"
+                    ],
+                    "Lead": [
+                        "Alien FM psy lead",
+                        "Spiritual Goa melodic lead",
+                        "Aggressive psychedelic screech"
+                    ]
+                }
+            };
+
+            const randomIdea =
+                ideas[genre][type][
+                    Math.floor(Math.random() * ideas[genre][type].length)
+                ];
+
+            document.getElementById("result").innerHTML = `
+                <h2>${genre} ${type}</h2>
+                <p>${randomIdea}</p>
+                <p style="color:#00ffd5;">Sound Pack Ready ✓</p>
+            `;
+        }
+
+    }, 300);
+} {
     "Techno": {
         "Bass": [
             "Dark rolling warehouse bass with analog saturation",
