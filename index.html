@@ -266,8 +266,18 @@ footer{
 
 <div class="step" id="stepBpm">
 <label>2. BPM</label>
-<input type="range" id="bpm" min="1" max="999" value="140" class="slider" oninput="bpmValue.innerText=this.value + ' BPM'">
-<div class="value" id="bpmValue">140 BPM</div>
+
+<select id="bpm" class="scroll-select">
+<script>
+for(let i=1;i<=250;i++){
+document.write(
+`<option value="${i}" ${i===140?'selected':''}>
+${i} BPM
+</option>`
+);
+}
+</script>
+</select>
 <button onclick="openStep('stepScale')">Next</button>
 </div>
 
