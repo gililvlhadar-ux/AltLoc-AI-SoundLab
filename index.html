@@ -89,36 +89,79 @@
       <option value="Full Pack">Full Pack</option>
     </select>
 
-    <button onclick="generatePack()">Generate Sound Idea</button>
+    <button onclick="generateIdea()">Generate Sound Idea</button>
 
     <div class="result" id="result">
       Your sound pack idea will appear here...
     </div>
   </div>
 
-  <script>
-    function generatePack() {
-      const style = document.getElementById("style").value;
-      const type = document.getElementById("type").value;
+    <script>
+function generateIdea() {
 
-      const ideas = [
-        "Wide stereo metallic FX with delay ping-pong",
-        "Deep punchy kick with analog saturation",
-        "Rolling offbeat bass with clean low-end",
-        "Robotic vocal chop with granular texture",
-        "Festival-ready pack with risers, impacts and drops",
-        "Dark underground loop with hypnotic movement",
-        "High quality sound pack ready for music producers"
-      ];
+const genre = document.getElementById("genre").value;
+const type = document.getElementById("soundType").value;
 
-      const randomIdea = ideas[Math.floor(Math.random() * ideas.length)];
+const ideas = {
 
-      document.getElementById("result").innerHTML =
-        "<strong>" + style + " " + type + "</strong><br><br>" +
-        randomIdea + "<br><br>" +
-        "Status: Demo generator active";
-    }
-  </script>
+Psytrance: {
+Kick: [
+"140 BPM rolling psy kick with tight transient and analog saturation",
+"Festival-ready punchy kick with deep controlled sub tail",
+"Wide stereo metallic kick layer with aggressive attack"
+],
+
+Bass: [
+"Rolling offbeat bass with glide and dark analog texture",
+"Deep hypnotic psy bass optimized for large sound systems",
+"Elastic groove bass with punchy transient movement"
+],
+
+FX: [
+"Metallic FM zap with ping pong delay",
+"Alien transition FX with granular freeze effect",
+"Wide cinematic riser with robotic texture"
+]
+},
+
+Techno: {
+Kick: [
+"Industrial techno kick with heavy distortion and dark tail",
+"Warehouse-style analog kick with deep pressure",
+"Hard groove kick with compressed transient slam"
+],
+
+Bass: [
+"Driving techno rumble bass with saturated low mids",
+"Dark hypnotic sub groove with analog warmth",
+"Mechanical rolling bassline with industrial texture"
+],
+
+FX: [
+"Cinematic tension riser with distorted atmosphere",
+"Mechanical sweep FX with stereo movement",
+"Dark warehouse transition impact"
+]
+}
+
+};
+
+const randomIdea =
+ideas[genre][type][
+Math.floor(Math.random() * ideas[genre][type].length)
+];
+
+document.getElementById("result").innerHTML = `
+<h2>${genre} ${type}</h2>
+<p>${randomIdea}</p>
+<p>Status: AI Generator Online</p>
+`;
+
+}
+</script>
+
+      
+
 
 </body>
 </html>
