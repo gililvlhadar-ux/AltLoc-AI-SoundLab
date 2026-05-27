@@ -7,6 +7,7 @@
 <title>AltLoc AI SoundLab</title>
 
 <style>
+
 body{
     margin:0;
     background:#0a0a0a;
@@ -37,3 +38,693 @@ p{
     background:#161616;
     padding:25px;
     border-radius:20px;
+    box-shadow:0 0 25px rgba(0,255,204,0.15);
+}
+
+select,button{
+    width:100%;
+    padding:18px;
+    margin-top:18px;
+    border:none;
+    border-radius:16px;
+    font-size:18px;
+}
+
+button{
+    background:#00ffcc;
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+#audioPlayer{
+    width:100%;
+    margin-top:25px;
+}
+
+#status{
+    margin-top:15px;
+    color:#00ffcc;
+    font-size:18px;
+}
+
+.hidden{
+    display:none;
+}
+
+.downloadBtn{
+    background:#222;
+    color:white;
+}
+
+.changeBtn{
+    background:#333;
+    color:#00ffcc;
+}
+
+.loopBtn{
+    background:#5511ff;
+    color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>AltLoc AI SoundLab</h1>
+
+<p>Create real production sounds by scale or chord</p>
+
+</header>
+
+<div class="container">
+
+<h2>Generate Sound</h2>
+
+<select id="genre">
+
+<option>Techno</option>
+<option>Psytrance</option>
+<option>Afro House</option>
+<option>Melodic Techno</option>
+<option>Progressive</option>
+
+</select>
+
+<select id="soundType">
+
+<option>Kick</option>
+<option>Bass</option>
+<option>Lead</option>
+<option>FX</option>
+<option>Atmosphere</option>
+
+</select>
+
+<select id="rootNote">
+
+<option>C</option>
+<option>C#</option>
+<option>D</option>
+<option>D#</option>
+<option>E</option>
+<option>F</option>
+<option>F#</option>
+<option>G</option>
+<option>G#</option>
+<option>A</option>
+<option>A#</option>
+<option>B</option>
+
+</select>
+
+<select id="musicMode">
+
+<option value="minor">Minor Scale</option>
+<option value="major">Major Scale</option>
+<option value="harmonicMinor">Harmonic Minor</option>
+<option value="phrygian">Phrygian</option>
+<option value="dorian">Dorian</option>
+<option value="minorChord">Minor Chord</option>
+<option value="majorChord">Major Chord</option>
+<option value="sus2">Sus2 Chord</option>
+<option value="sus4">Sus4 Chord</option>
+<option value="power">Power Chord</option>
+
+</select>
+
+<button onclick="generateSound()">
+
+Generate Reference Sound
+
+</button>
+
+<div id="status">
+
+Generate a sound to hear preview...
+
+</div>
+
+<audio id="audioPlayer" controls></audio>
+
+<button id="loopBtn" class="loopBtn" onclick="toggleLoop()">
+
+🔁 Loop OFF
+
+</button>
+
+<button id="approveBtn" class="hidden" onclick="approveDownload()">
+
+✅ I Like This Sound
+
+</button>
+
+<button id="changeBtn" class="hidden changeBtn" onclick="generateSound()">
+
+🔄 Generate Another Sound
+
+</button>
+
+<button id="downloadBtn" class="hidden downloadBtn" onclick="downloadSound()">
+
+⬇ Download WAV
+
+</button>
+
+</div>
+
+<script>
+
+let audioBlob = null;
+let loopEnabled = false;
+
+const noteFrequencies = {
+
+    "C":261.63,
+    "C#":277.18,
+    "D":293.66,
+    "D#":311.13,
+    "E":329.63,
+    "F":349.23,
+    "F#":369.99,
+    "G":392.00,
+    "G#":415.30,
+    "A":440.00,
+    "A#":466.16,
+    "B":493.88
+
+};
+
+const patterns = {
+
+    major:[0,2,4,5,7,9,11,12],
+    minor:[0,2,3,5,7,8,10,12],
+    harmonicMinor:[0,2,3,5,7,8,11,12],
+    phrygian:[0,1,3,5,7,8,10,12],
+    dorian:[0,2,3,5,7,9,10,12],
+    majorChord:[0,4,7,12],
+    minorChord:[0,3,7,12],
+    sus2:[0,2,7,12],
+    sus4:[0,5,7,12],
+    power:[0,7,12]
+
+};
+
+function getFreq(rootFreq,semitones){
+
+    return rootFreq * Math.pow(2,semitones/12);
+
+}
+
+function generateSound(){
+
+    document.getElementById("approveBtn")
+        .classList.add("hidden");
+
+    document.getElementById("downloadBtn")
+        .classList.add("hidden");
+
+    const genre =
+        document.getElementById("genre").value;
+
+    const soundType =
+        document.getElementById("soundType").value;
+
+    const rootNote =
+        document.getElementById("rootNote").value;
+
+    const musicMode =
+        document.getElementById("musicMode").value;
+
+    const status =
+        document.getElementById("status");
+
+    status.innerText =
+        "Generating sound preview...";
+
+    const audioContext =
+        new(window.AudioContext || window.webkitAudioContext)();
+
+    const duration = 4;
+
+    const sampleRate =
+        audioContext.sampleRate;
+
+    const buffer =
+        audioContext.createBuffer(
+            1,
+            sampleRate * duration,
+            sampleRate
+        );
+
+    const data =
+        buffer.getChannelData(0);
+
+    const rootFreq =
+        noteFrequencies[rootNote];
+
+    const selectedPattern =
+        patterns[musicMode];
+
+    const chosenSemitone =
+        selectedPattern[
+            Math.floor(
+                Math.random() *
+                selectedPattern.length
+            )
+        ];
+
+    let frequency =
+        getFreq(
+            rootFreq,
+            chosenSemitone
+        );
+
+    if(soundType === "Kick"){
+
+        frequency = rootFreq / 4;
+    }
+
+    if(soundType === "Bass"){
+
+        frequency = rootFreq / 2;
+    }
+
+    for(let i = 0; i < data.length; i++){
+
+        const t = i / sampleRate;
+
+        let sample = 0;
+
+        if(soundType === "Kick"){
+
+            const pitch =
+                frequency *
+                Math.exp(-9 * t);
+
+            sample =
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    pitch *
+                    t
+                );
+
+            sample *=
+                Math.exp(-8 * t);
+
+            sample +=
+                (Math.random() * 2 - 1) * 0.03;
+        }
+
+        else if(soundType === "Bass"){
+
+            sample =
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    frequency *
+                    t
+                );
+
+            sample +=
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    frequency *
+                    0.5 *
+                    t
+                ) * 0.45;
+
+            sample +=
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    frequency *
+                    2 *
+                    t
+                ) * 0.15;
+
+            sample =
+                Math.tanh(sample * 2.5);
+
+            sample *= 0.75;
+        }
+
+        else if(soundType === "Lead"){
+
+            const note1 = frequency;
+
+            const note2 =
+                getFreq(
+                    rootFreq,
+                    selectedPattern[1] || 3
+                );
+
+            const note3 =
+                getFreq(
+                    rootFreq,
+                    selectedPattern[2] || 7
+                );
+
+            sample =
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    note1 *
+                    t
+                ) * 0.6 +
+
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    note2 *
+                    t
+                ) * 0.25 +
+
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    note3 *
+                    t
+                ) * 0.15;
+
+            sample =
+                Math.tanh(sample * 3);
+
+            sample *=
+                Math.exp(-0.6 * t);
+        }
+
+        else if(soundType === "FX"){
+
+            const sweep =
+                frequency +
+                (
+                    frequency *
+                    2 *
+                    t /
+                    duration
+                );
+
+            sample =
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    sweep *
+                    t
+                );
+
+            sample +=
+                (Math.random() * 2 - 1) * 0.35;
+
+            sample *=
+                Math.exp(-1.2 * t);
+        }
+
+        else if(soundType === "Atmosphere"){
+
+            const chordA =
+                getFreq(
+                    rootFreq,
+                    selectedPattern[0]
+                );
+
+            const chordB =
+                getFreq(
+                    rootFreq,
+                    selectedPattern[1] || 3
+                );
+
+            const chordC =
+                getFreq(
+                    rootFreq,
+                    selectedPattern[2] || 7
+                );
+
+            sample =
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    chordA *
+                    t
+                ) * 0.25 +
+
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    chordB *
+                    t
+                ) * 0.22 +
+
+                Math.sin(
+                    2 *
+                    Math.PI *
+                    chordC *
+                    t
+                ) * 0.18;
+
+            sample +=
+                (Math.random() * 2 - 1) * 0.04;
+
+            sample *= 0.8;
+        }
+
+        data[i] =
+            Math.max(
+                -1,
+                Math.min(1,sample)
+            );
+    }
+
+    const wavBlob =
+        bufferToWave(
+            buffer,
+            buffer.length
+        );
+
+    audioBlob = wavBlob;
+
+    const audioURL =
+        URL.createObjectURL(wavBlob);
+
+    const player =
+        document.getElementById("audioPlayer");
+
+    player.src = audioURL;
+
+    player.loop = loopEnabled;
+
+    player.play();
+
+    document.getElementById("approveBtn")
+        .classList.remove("hidden");
+
+    document.getElementById("changeBtn")
+        .classList.remove("hidden");
+
+    status.innerText =
+        genre +
+        " " +
+        soundType +
+        " in " +
+        rootNote +
+        " " +
+        musicMode +
+        " ready ✅";
+}
+
+function toggleLoop(){
+
+    const player =
+        document.getElementById("audioPlayer");
+
+    loopEnabled = !loopEnabled;
+
+    player.loop = loopEnabled;
+
+    if(loopEnabled){
+
+        document.getElementById("loopBtn")
+            .innerText =
+                "🔁 Loop ON";
+
+        player.play();
+
+    } else {
+
+        document.getElementById("loopBtn")
+            .innerText =
+                "🔁 Loop OFF";
+    }
+}
+
+function approveDownload(){
+
+    document.getElementById("downloadBtn")
+        .classList.remove("hidden");
+
+    document.getElementById("status")
+        .innerText =
+            "Sound approved ✅ Download enabled.";
+}
+
+function downloadSound(){
+
+    if(!audioBlob){
+
+        alert("Generate sound first");
+
+        return;
+    }
+
+    const type =
+        document.getElementById("soundType").value;
+
+    const root =
+        document.getElementById("rootNote").value;
+
+    const mode =
+        document.getElementById("musicMode").value;
+
+    const link =
+        document.createElement("a");
+
+    link.href =
+        URL.createObjectURL(audioBlob);
+
+    link.download =
+        "AltLoc-" +
+        type +
+        "-" +
+        root +
+        "-" +
+        mode +
+        ".wav";
+
+    link.click();
+}
+
+function bufferToWave(abuffer,len){
+
+    const numOfChan =
+        abuffer.numberOfChannels;
+
+    const length =
+        len * numOfChan * 2 + 44;
+
+    const buffer =
+        new ArrayBuffer(length);
+
+    const view =
+        new DataView(buffer);
+
+    const channels = [];
+
+    let offset = 0;
+    let pos = 0;
+
+    setUint32(0x46464952);
+    setUint32(length - 8);
+    setUint32(0x45564157);
+
+    setUint32(0x20746d66);
+    setUint32(16);
+
+    setUint16(1);
+    setUint16(numOfChan);
+
+    setUint32(abuffer.sampleRate);
+
+    setUint32(
+        abuffer.sampleRate *
+        2 *
+        numOfChan
+    );
+
+    setUint16(numOfChan * 2);
+    setUint16(16);
+
+    setUint32(0x61746164);
+    setUint32(length - pos - 4);
+
+    for(let i = 0;
+        i < abuffer.numberOfChannels;
+        i++){
+
+        channels.push(
+            abuffer.getChannelData(i)
+        );
+    }
+
+    while(pos < length){
+
+        for(let i = 0;
+            i < numOfChan;
+            i++){
+
+            let sample =
+                Math.max(
+                    -1,
+                    Math.min(
+                        1,
+                        channels[i][offset]
+                    )
+                );
+
+            sample =
+                sample < 0
+                ? sample * 0x8000
+                : sample * 0x7FFF;
+
+            view.setInt16(
+                pos,
+                sample,
+                true
+            );
+
+            pos += 2;
+        }
+
+        offset++;
+    }
+
+    function setUint16(data){
+
+        view.setUint16(
+            pos,
+            data,
+            true
+        );
+
+        pos += 2;
+    }
+
+    function setUint32(data){
+
+        view.setUint32(
+            pos,
+            data,
+            true
+        );
+
+        pos += 4;
+    }
+
+    return new Blob(
+        [buffer],
+        {type:"audio/wav"}
+    );
+}
+
+</script>
+
+</body>
+</html>
