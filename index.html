@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AltLoc AI SoundLab</title>
+
   <style>
     body {
       margin: 0;
@@ -38,7 +39,8 @@
       box-shadow: 0 0 20px #00ffcc33;
     }
 
-    select, button {
+    select,
+    button {
       width: 100%;
       padding: 14px;
       margin-top: 15px;
@@ -51,6 +53,29 @@
       background: #00ffcc;
       color: #000;
       font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 12px;
+      background: #222;
+      border-radius: 20px;
+      margin-top: 20px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #00ffcc;
+      transition: width 0.2s;
     }
 
     .result {
@@ -61,8 +86,15 @@
       color: #00ffcc;
       min-height: 80px;
     }
+
+    .loading-text {
+      margin-top: 10px;
+      color: #aaa;
+      font-size: 14px;
+    }
   </style>
 </head>
+
 <body>
 
   <header>
@@ -71,6 +103,7 @@
   </header>
 
   <div class="box">
+
     <h2>Create Sound Pack</h2>
 
     <select id="style">
@@ -89,37 +122,82 @@
       <option value="Full Pack">Full Pack</option>
     </select>
 
-    <button onclick="generateIdea()">Generate Sound Idea</button>
+    <button onclick="generateIdea()">
+      Generate Sound Idea
+    </button>
+
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="loading-text" id="loadingText"></div>
 
     <div class="result" id="result">
       Your sound pack idea will appear here...
     </div>
+
   </div>
 
-    <script>
+  <script>
 
-function generateIdea() {
+    function generateIdea() {
 
-const genre = document.getElementById("genre").value;
-const type = document.getElementById("soundType").value;
+      const genre = document.getElementById("style").value;
+      const type = document.getElementById("type").value;
 
-const ideas = [
-`Dark ${genre} kick pack with cinematic impacts`,
-`${genre} vocal chops and ${type} textures`,
-`Industrial ${genre} transition FX pack`,
-`${genre} bass one-shots with analog warmth`,
-`${type} atmospheres for ${genre} producers`,
-`${genre} festival drops and risers collection`
-];
+      const result = document.getElementById("result");
+      const progressBar = document.getElementById("progressBar");
+      const progressContainer = document.getElementById("progressContainer");
+      const loadingText = document.getElementById("loadingText");
 
-const randomIdea = ideas[Math.floor(Math.random() * ideas.length)];
+      progressContainer.style.display = "block";
 
-document.getElementById("result").innerHTML =
-"<h2>🔥 Generated Idea:</h2><p>" + randomIdea + "</p>";
+      let progress = 0;
 
-}
-</script>
+      result.innerHTML = "";
+      loadingText.innerHTML = "Generating AI Sound Pack...";
 
+      const interval = setInterval(() => {
+
+        progress += 5;
+
+        progressBar.style.width = progress + "%";
+
+        loadingText.innerHTML =
+          "Generating AI Sound Pack... " + progress + "%";
+
+        if (progress >= 100) {
+
+          clearInterval(interval);
+
+          const ideas = [
+            `Dark ${genre} kick pack with cinematic impacts`,
+            `${genre} vocal chops and ${type} textures`,
+            `Industrial ${genre} transition FX pack`,
+            `${genre} bass one-shots with analog warmth`,
+            `${type} atmospheres for ${genre} producers`,
+            `${genre} festival drops and risers collection`,
+            `${genre} cinematic trailer sounds with deep ${type} layers`,
+            `Heavy ${genre} groove pack for underground producers`,
+            `${type} toolkit inspired by futuristic rave culture`
+          ];
+
+          const randomIdea =
+            ideas[Math.floor(Math.random() * ideas.length)];
+
+          result.innerHTML =
+            "<h2>🔥 Generated Idea:</h2><p>" +
+            randomIdea +
+            "</p>";
+
+          loadingText.innerHTML = "Generation Complete ✅";
+        }
+
+      }, 100);
+
+    }
+
+  </script>
 
 </body>
 </html>
